@@ -61,7 +61,17 @@ class Handler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type','text/html')
             self.end_headers()
-            self.wfile.write(bytes(message, "utf8"))
+            self.wfile.write(bytes(message, 'utf8'))
+        elif self.path == '/':
+            files = os.listdir(REPLAYS_DIR)
+            files = [f[:-4] for f in files if f.endswith('.hlt')]
+            html = ['<a href="/r/{}">{}</a>'.format(f, f) for f in files]
+            message = '\n'.join(html)
+            message = '<!DOCTYPE HTML><html><body>' + message + '</body></html>'
+            self.send_response(200)
+            self.send_header('Content-type','text/html')
+            self.end_headers()
+            self.wfile.write(bytes(message, 'utf8'))
         else:
             fname = self.path[1:]
             if os.path.exists(fname):
