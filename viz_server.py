@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 import argparse
+import mimetypes
 
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
@@ -76,6 +77,9 @@ class Handler(BaseHTTPRequestHandler):
             fname = self.path[1:]
             if os.path.exists(fname):
                 self.send_response(200)
+                # print( mimetypes.guess_type(fname, strict=False))
+                self.send_header('Content-type', mimetypes.guess_type(fname, strict=False)[0])
+                self.end_headers()
                 with open(fname, 'rb') as f:
                     self.wfile.write(f.read())
 
